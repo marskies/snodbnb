@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>[BRAND NAME] — Stay Awhile, Probably</title>
+<style>
+  /* =========================================================
+     ONE-STOP ACCENT COLOR: change this single value to re-theme
+     ========================================================= */
+  :root{
+    --accent: #FF5A5F;          /* coral/salmon — the "real thing" vibe */
+    --accent-dark:#e04e52;
+    --ink:#222;
+    --muted:#717171;
+    --line:#ebebeb;
+    --card:#fff;
+    --bg:#fafafa;
+    --radius:16px;
+    --shadow:0 6px 20px rgba(0,0,0,.08);
+    --font:'Helvetica Neue',Helvetica,Arial,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.5;}
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px;}
+  header.site{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.4rem;color:var(--accent);}
+  .brand svg{width:30px;height:30px;}
+  .tagline{color:var(--muted);font-size:.95rem;}
+  .superhost{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.8rem;font-weight:700;box-shadow:var(--shadow);}
+  .superhost::before{content:"🏅";}
+  .hero{padding:36px 0 8px;}
+  .hero h1{font-size:2rem;margin:0 0 6px;}
+  .hero p{color:var(--muted);margin:0;}
+  .room{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin:26px 0;}
+  .room-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  .room-head h2{margin:0 0 4px;font-size:1.5rem;}
+  .rating{font-size:.95rem;color:var(--ink);}
+  .rating .star{color:var(--accent);}
+  .price{font-size:1.2rem;font-weight:800;white-space:nowrap;}
+  .price small{font-weight:500;color:var(--muted);font-size:.85rem;}
+  .desc{color:#444;margin:10px 0 16px;}
+  .gallery{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;border-radius:12px;overflow:hidden;height:320px;}
+  .gallery img{width:100%;height:100%;object-fit:cover;cursor:pointer;transition:filter .15s;background:#eee;}
+  .gallery img:first-child{grid-row:1 / span 2;}
+  .gallery img:hover{filter:brightness(.92);}
+  .amenities{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;}
+  .amenity{display:inline-flex;align-items:center;gap:8px;background:#f7f7f7;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:.9rem;}
+  .booking{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:18px;}
+  @media(max-width:760px){
+    .booking{grid-template-columns:1fr;}
+    .gallery{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;height:auto;}
+    .gallery img:first-child{grid-row:auto;grid-column:1 / span 2;height:200px;}
+  }
+  .cal{border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:700;}
+  .cal-head button{border:1px solid var(--line);background:#fff;border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:1rem;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-dow{font-size:.7rem;color:var(--muted);text-align:center;font-weight:700;text-transform:uppercase;}
+  .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:.85rem;cursor:pointer;user-select:none;border:1px solid transparent;}
+  .cal-day.empty{cursor:default;}
+  .cal-day.past{color:#ccc;cursor:not-allowed;text-decoration:line-through;}
+  .cal-day.booked{background:#f1f1f1;color:#b9b9b9;text-decoration:line-through;cursor:not-allowed;}
+  .cal-day.selectable:hover{border-color:var(--accent);}
+  .cal-day.sel-edge{background:var(--accent);color:#fff;font-weight:700;}
+  .cal-day.sel-range{background:rgba(255,90,95,.18);}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:.8rem;font-weight:700;margin-bottom:4px;color:var(--muted);}
+  .field input,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;}
+  .field textarea{resize:vertical;min-height:60px;}
+  .range-pick{display:flex;gap:8px;}
+  .range-pick .field{flex:1;}
+  .pickbox{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;min-height:42px;font-size:.9rem;}
+  .pickbox.active{border-color:var(--accent);}
+  .btn{display:block;width:100%;border:none;background:var(--accent);color:#fff;font-weight:800;padding:13px;border-radius:10px;font-size:1rem;cursor:pointer;}
+  .btn:hover{background:var(--accent-dark);}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .msg{margin-top:10px;font-size:.9rem;padding:10px 12px;border-radius:10px;display:none;}
+  .msg.err{display:block;background:#fff0f0;color:#b3261e;border:1px solid #f4caca;}
+  .msg.ok{display:block;background:#eefaf0;color:#1c7a3c;border:1px solid #c5ecce;}
+  .hint{font-size:.78rem;color:var(--muted);margin-top:4px;}
+  .upcoming{margin-top:16px;border-top:1px solid var(--line);padding-top:12px;}
+  .upcoming h4{margin:0 0 8px;font-size:.85rem;text-transform:uppercase;color:var(--muted);letter-spacing:.04em;}
+  .bk-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:.9rem;}
+  .bk-item:last-child{border-bottom:none;}
+  .cancel-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 10px;font-size:.8rem;cursor:pointer;color:#b3261e;}
+  .cancel-btn:hover{background:#fff0f0;}
+  section.block{margin:40px 0;}
+  section.block h2{font-size:1.5rem;}
+  .reviews{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:760px){.reviews{grid-template-columns:1fr;}}
+  .review{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+  .review-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .avatar{width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;}
+  .review .name{font-weight:700;}
+  .review .when{font-size:.8rem;color:var(--muted);}
+  .review .stars{color:var(--accent);font-size:.9rem;}
+  .host{display:flex;gap:20px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);flex-wrap:wrap;}
+  .host img{width:110px;height:110px;border-radius:50%;object-fit:cover;background:#eee;}
+  .rules li{margin-bottom:8px;}
+  .faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);}
+  .faq summary{font-weight:700;cursor:pointer;}
+  .faq p{color:#444;margin:10px 0 0;}
+  footer.site{border-top:1px solid var(--line);background:#fff;padding:26px 0;color:var(--muted);font-size:.85rem;text-align:center;}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:92vw;max-height:88vh;border-radius:10px;}
+  .lightbox .close{position:absolute;top:18px;right:24px;color:#fff;font-size:2rem;cursor:pointer;line-height:1;}
+</style>
+</head>
+<body>
+<!-- ===================== HEADER ===================== -->
+<header class="site">
+  <div class="wrap topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2 4 6 7 6 11a6 6 0 11-12 0c0-4 4-7 6-11z"/></svg>
+      [BRAND NAME]
+    </div>
+    <div class="tagline">[TAGLINE]</div>
+    <div class="superhost">Superhost</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>Two rooms. One [HOST NAME]. Infinite vibes.</h1>
+    <p>Cozy, questionable, and conveniently located inside someone's actual house.</p>
+  </div>
+
+  <!-- ===================== ROOM 1 ===================== -->
+  <article class="room" id="room1">
+    <div class="room-head">
+      <div>
+        <h2>[ROOM 1 NAME]</h2>
+        <div class="rating"><span class="star">★</span> <strong>4.97</strong> · <span style="text-decoration:underline">38 reviews</span> · Superhost</div>
+      </div>
+      <div class="price">[PRICE]<small> / night</small></div>
+    </div>
+    <div class="gallery" data-gallery>
+      <img src="images/room1-1.jpg" alt="[ROOM 1 NAME] photo 1" />
+      <img src="images/room1-2.jpg" alt="[ROOM 1 NAME] photo 2" />
+      <img src="images/room1-3.jpg" alt="[ROOM 1 NAME] photo 3" />
+    </div>
+    <p class="desc">[ROOM 1 DESCRIPTION — make it funny.]</p>
+    <div class="amenities">
+      <span class="amenity">⚡ Lightning Wi-Fi</span>
+      <span class="amenity">☕ Bottomless coffee</span>
+      <span class="amenity">🪴 One (1) emotional-support houseplant</span>
+      <span class="amenity">🛏️ A bed, allegedly</span>
+    </div>
+    <div class="booking" data-room="room1">
+      <div class="cal" data-cal></div>
+      <div>
+        <div class="range-pick">
+          <div class="field"><label>Check-in</label><div class="pickbox" data-checkin>Pick a date →</div></div>
+          <div class="field"><label>Check-out</label><div class="pickbox" data-checkout>Pick a date</div></div>
+        </div>
+        <div class="field"><label>Your name</label><input type="text" data-name placeholder="[e.g. Captain Snacks]" /></div>
+        <div class="field"><label>Reason for visit (optional)</label><textarea data-note placeholder="[e.g. fleeing my roommate's cooking]"></textarea></div>
+        <button class="btn" data-book>Book this room</button>
+        <div class="msg" data-msg></div>
+        <div class="hint">Tap a check-in date, then a check-out date on the calendar.</div>
+        <div class="upcoming"><h4>Upcoming bookings</h4><div data-list><em style="color:var(--muted);font-size:.85rem;">Loading…</em></div></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===================== ROOM 2 ===================== -->
+  <article class="room" id="room2">
+    <div class="room-head">
+      <div>
+        <h2>[ROOM 2 NAME]</h2>
+        <div class="rating"><span class="star">★</span> <strong>4.88</strong> · <span style="text-decoration:underline">52 reviews</span> · Superhost</div>
+      </div>
+      <div class="price">[PRICE]<small> / night</small></div>
+    </div>
+    <div class="gallery" data-gallery>
+      <img src="images/room2-1.jpg" alt="[ROOM 2 NAME] photo 1" />
+      <img src="images/room2-2.jpg" alt="[ROOM 2 NAME] photo 2" />
+      <img src="images/room2-3.jpg" alt="[ROOM 2 NAME] photo 3" />
+    </div>
+    <p class="desc">[ROOM 2 DESCRIPTION — make it funny.]</p>
+    <div class="amenities">
+      <span class="amenity">⚡ Lightning Wi-Fi</span>
+      <span class="amenity">🍪 Mysterious snack drawer</span>
+      <span class="amenity">🐈 Resident cat (does not consent to petting)</span>
+      <span class="amenity">🌅 Window with a view of another window</span>
+    </div>
+    <div class="booking" data-room="room2">
+      <div class="cal" data-cal></div>
+      <div>
+        <div class="range-pick">
+          <div class="field"><label>Check-in</label><div class="pickbox" data-checkin>Pick a date →</div></div>
+          <div class="field"><label>Check-out</label><div class="pickbox" data-checkout>Pick a date</div></div>
+        </div>
+        <div class="field"><label>Your name</label><input type="text" data-name placeholder="[e.g. Sir Naps-a-lot]" /></div>
+        <div class="field"><label>Reason for visit (optional)</label><textarea data-note placeholder="[e.g. emotional support from the cat]"></textarea></div>
+        <button class="btn" data-book>Book this room</button>
+        <div class="msg" data-msg></div>
+        <div class="hint">Tap a check-in date, then a check-out date on the calendar.</div>
+        <div class="upcoming"><h4>Upcoming bookings</h4><div data-list><em style="color:var(--muted);font-size:.85rem;">Loading…</em></div></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===================== REVIEWS ===================== -->
+  <section class="block">
+    <h2><span style="color:var(--accent)">★</span> 4.93 · 90 reviews</h2>
+    <div class="reviews">
+      <div class="review"><div class="review-top"><div class="avatar">D</div><div><div class="name">[Dana]</div><div class="when">[March 2026]</div></div></div><div class="stars">★★★★★</div><p>[Review text — e.g. "Slept like a baby. Woke up like a slightly larger baby."]</p></div>
+      <div class="review"><div class="review-top"><div class="avatar">M</div><div><div class="name">[Marcus]</div><div class="when">[February 2026]</div></div></div><div class="stars">★★★★★</div><p>[Review text — e.g. "The cat reviewed me. I passed. Barely."]</p></div>
+      <div class="review"><div class="review-top"><div class="avatar">P</div><div><div class="name">[Priya]</div><div class="when">[January 2026]</div></div></div><div class="stars">★★★★☆</div><p>[Review text — comedic.]</p></div>
+      <div class="review"><div class="review-top"><div class="avatar">J</div><div><div class="name">[Jordan]</div><div class="when">[December 2025]</div></div></div><div class="stars">★★★★★</div><p>[Review text — comedic.]</p></div>
+      <div class="review"><div class="review-top"><div class="avatar">L</div><div><div class="name">[Lee]</div><div class="when">[November 2025]</div></div></div><div class="stars">★★★★★</div><p>[Review text — comedic.]</p></div>
+      <div class="review"><div class="review-top"><div class="avatar">S</div><div><div class="name">[Sam]</div><div class="when">[October 2025]</div></div></div><div class="stars">★★★★★</div><p>[Review text — comedic.]</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== HOST ===================== -->
+  <section class="block">
+    <h2>Meet your host</h2>
+    <div class="host">
+      <img src="images/host.jpg" alt="[HOST NAME]" />
+      <div>
+        <h3 style="margin:0 0 4px;">[HOST NAME] <span class="superhost" style="vertical-align:middle;">Superhost</span></h3>
+        <p style="margin:0;color:#444;">[HOST BIO — short and funny. e.g. "Hosting since whenever the cat allowed it. Fluent in passive-aggressive Post-it notes."]</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOUSE RULES ===================== -->
+  <section class="block">
+    <h2>House rules</h2>
+    <ul class="rules">
+      <li>Dishes do not do themselves. They never have. Stop testing it.</li>
+      <li>The cat outranks you. Address it formally.</li>
+      <li>Quiet hours begin whenever the host is asleep (unpredictable).</li>
+      <li>[ADD YOUR OWN RULE HERE]</li>
+      <li>[ADD YOUR OWN RULE HERE]</li>
+    </ul>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section class="block faq">
+    <h2>FAQ</h2>
+    <details><summary>Is there parking?</summary><p>[Answer — e.g. "Yes, if you can parallel-park between two suspiciously placed trash cans."]</p></details>
+    <details><summary>What's the Wi-Fi password?</summary><p>[Answer — e.g. "It's written on a sticky note that fell behind the fridge in 2019."]</p></details>
+    <details><summary>Can I bring guests?</summary><p>[Answer — e.g. "Only if they're funnier than you."]</p></details>
+    <details><summary>Is breakfast included?</summary><p>[Answer — e.g. "Breakfast is a state of mind."]</p></details>
+  </section>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site">
+  <div class="wrap">
+    🤡 [BRAND NAME] is a parody for friends and not a real listing. No rooms, refunds, or expectations are real. Please do not actually show up. (Unless invited. By a human. Not this website.)
+  </div>
+</footer>
+
+<!-- ===================== LIGHTBOX ===================== -->
+<div class="lightbox" id="lightbox">
+  <span class="close" id="lbClose">&times;</span>
+  <img id="lbImg" src="" alt="enlarged photo" />
+</div>
+
+<!-- ===================== FIREBASE + APP LOGIC ===================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, deleteDoc, doc,
+  onSnapshot, query, where, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* =========================================================
+   PASTE YOUR FIREBASE CONFIG HERE (Project settings → Your apps)
+   ========================================================= */
+const firebaseConfig = { /* [PASTE MY FIREBASE CONFIG] */ };
+
+/* SECURITY NOTE:
+   This gag assumes Firestore rules allow open read + write, e.g.:
+       allow read, write: if true;
+   That means ANYONE WITH THE LINK CAN READ, ADD, AND CANCEL BOOKINGS.
+   That is fine for a private joke among trusted friends. You can tighten
+   the rules later (require auth, restrict deletes, etc.) if you want. */
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const bookingsCol = collection(db, "bookings");
+
+/* ---------- date helpers (all YYYY-MM-DD, treated as local) ---------- */
+const fmt = d => d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+const parse = s => { const p = s.split("-").map(Number); return new Date(p[0], p[1]-1, p[2]); };
+const todayStr = fmt(new Date());
+const addDays = (s,n) => { const d=parse(s); d.setDate(d.getDate()+n); return fmt(d); };
+function nightsOf(b){ const out=[]; let cur=b.checkIn; while(cur < b.checkOut){ out.push(cur); cur=addDays(cur,1);} return out; }
+
+/* ---------- per-room controller ---------- */
+function initRoom(rootEl){
+  const room    = rootEl.getAttribute("data-room");
+  const calEl   = rootEl.querySelector("[data-cal]");
+  const ciBox   = rootEl.querySelector("[data-checkin]");
+  const coBox   = rootEl.querySelector("[data-checkout]");
+  const nameEl  = rootEl.querySelector("[data-name]");
+  const noteEl  = rootEl.querySelector("[data-note]");
+  const bookBtn = rootEl.querySelector("[data-book]");
+  const msgEl   = rootEl.querySelector("[data-msg]");
+  const listEl  = rootEl.querySelector("[data-list]");
+
+  let bookings = [];
+  let bookedNights = new Set();
+  let checkIn = null, checkOut = null;
+  const now = new Date();
+  let viewYear = now.getFullYear(), viewMonth = now.getMonth();
+
+  function setMsg(text, type){ msgEl.className = "msg " + (type||""); msgEl.textContent = text || ""; }
+
+  function recompute(){
+    bookedNights = new Set();
+    bookings.forEach(b => nightsOf(b).forEach(n => bookedNights.add(n)));
+  }
+
+  function renderCal(){
+    const monthName = new Date(viewYear, viewMonth, 1).toLocaleString(undefined,{month:"long", year:"numeric"});
+    const first = new Date(viewYear, viewMonth, 1).getDay();
+    const days  = new Date(viewYear, viewMonth+1, 0).getDate();
+    const dows = ["S","M","T","W","T","F","S"];
+    let html = '<div class="cal-head"><button data-prev>‹</button><span>'+monthName+'</span><button data-next>›</button></div><div class="cal-grid">';
+    dows.forEach(d => html += '<div class="cal-dow">'+d+'</div>');
+    for(let i=0;i<first;i++) html += '<div class="cal-day empty"></div>';
+    for(let day=1; day<=days; day++){
+      const ds = fmt(new Date(viewYear, viewMonth, day));
+      let cls = "cal-day";
+      if(ds < todayStr) cls += " past";
+      else if(bookedNights.has(ds)) cls += " booked";
+      else cls += " selectable";
+      if(ds === checkIn || ds === checkOut) cls += " sel-edge";
+      else if(checkIn && checkOut && ds > checkIn && ds < checkOut) cls += " sel-range";
+      html += '<div class="'+cls+'" data-date="'+ds+'">'+day+'</div>';
+    }
+    html += '</div>';
+    calEl.innerHTML = html;
+    calEl.querySelector("[data-prev]").onclick = () => { if(--viewMonth<0){viewMonth=11;viewYear--;} renderCal(); };
+    calEl.querySelector("[data-next]").onclick = () => { if(++viewMonth>11){viewMonth=0;viewYear++;} renderCal(); };
+    calEl.querySelectorAll(".cal-day.selectable").forEach(el => {
+      el.onclick = () => pickDate(el.getAttribute("data-date"));
+    });
+  }
+
+  function pickDate(ds){
+    setMsg("");
+    if(!checkIn || (checkIn && checkOut)){ checkIn = ds; checkOut = null; }
+    else if(ds <= checkIn){ checkIn = ds; checkOut = null; }
+    else {
+      let cur = checkIn, blocked = false;
+      while(cur < ds){ if(bookedNights.has(cur)){ blocked = true; break; } cur = addDays(cur,1); }
+      if(blocked){ checkIn = ds; checkOut = null; setMsg("That range bumps into an existing booking — try again.","err"); }
+      else { checkOut = ds; }
+    }
+    ciBox.textContent = checkIn || "Pick a date →";
+    coBox.textContent = checkOut || "Pick a date";
+    renderCal();
+  }
+
+  async function book(){
+    setMsg("");
+    const name = (nameEl.value || "").trim();
+    if(!checkIn || !checkOut){ setMsg("Pick a check-in and a check-out date first.","err"); return; }
+    if(!name){ setMsg("We need a name, mysterious stranger.","err"); return; }
+    // final overlap check against the latest live data
+    let cur = checkIn, conflict = false;
+    while(cur < checkOut){ if(bookedNights.has(cur)){ conflict = true; break; } cur = addDays(cur,1); }
+    if(conflict){ setMsg("Someone just grabbed those dates. Pick another range.","err"); return; }
+    bookBtn.disabled = true; bookBtn.textContent = "Booking…";
+    try{
+      await addDoc(bookingsCol, {
+        room: room,
+        guestName: name,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        note: (noteEl.value || "").trim(),
+        createdAt: serverTimestamp()
+      });
+      setMsg("You're in, Superguest. Check-in details to follow (probably). 🎉","ok");
+      checkIn = null; checkOut = null; nameEl.value = ""; noteEl.value = "";
+      ciBox.textContent = "Pick a date →"; coBox.textContent = "Pick a date";
+      renderCal();
+    }catch(e){
+      setMsg("Booking failed: " + e.message,"err");
+    }finally{
+      bookBtn.disabled = false; bookBtn.textContent = "Book this room";
+    }
+  }
+  bookBtn.addEventListener("click", book);
+
+  function renderList(){
+    const upcoming = bookings.filter(b => b.checkOut > todayStr)
+      .sort((a,b)=> a.checkIn < b.checkIn ? -1 : 1);
+    if(upcoming.length === 0){
+      listEl.innerHTML = '<em style="color:var(--muted);font-size:.85rem;">No bookings yet. Be the first legend.</em>';
+      return;
+    }
+    listEl.innerHTML = upcoming.map(b =>
+      '<div class="bk-item"><span><strong>'+escapeHtml(b.guestName)+'</strong> · '+b.checkIn+' → '+b.checkOut+
+      (b.note ? ' · <em style="color:var(--muted)">'+escapeHtml(b.note)+'</em>' : '')+
+      '</span><button class="cancel-btn" data-id="'+b.id+'">Cancel</button></div>'
+    ).join("");
+    listEl.querySelectorAll(".cancel-btn").forEach(btn => {
+      btn.onclick = async () => {
+        if(!confirm("Cancel this booking for everyone?")) return;
+        btn.disabled = true;
+        try{ await deleteDoc(doc(db, "bookings", btn.getAttribute("data-id"))); }
+        catch(e){ alert("Could not cancel: " + e.message); btn.disabled = false; }
+      };
+    });
+  }
+  function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // ---- live Firestore listener: updates for EVERYONE in real time ----
+  const q = query(bookingsCol, where("room", "==", room));
+  onSnapshot(q, snap => {
+    bookings = snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+    recompute();
+    renderCal();
+    renderList();
+  }, err => {
+    setMsg("Could not load bookings (check your Firebase config & rules): " + err.message, "err");
+  });
+
+  renderCal();
+}
+
+// ---- lightbox (click-to-enlarge gallery) ----
+const lightbox = document.getElementById("lightbox");
+const lbImg = document.getElementById("lbImg");
+document.querySelectorAll("[data-gallery] img").forEach(img => {
+  img.addEventListener("click", () => { lbImg.src = img.src; lightbox.classList.add("open"); });
+});
+document.getElementById("lbClose").addEventListener("click", () => lightbox.classList.remove("open"));
+lightbox.addEventListener("click", e => { if(e.target === lightbox) lightbox.classList.remove("open"); });
+
+// ---- boot both rooms ----
+document.querySelectorAll(".booking[data-room]").forEach(initRoom);
+</script>
+</body>
+</html>
