@@ -306,6 +306,8 @@
 <!-- ===================== FIREBASE + APP LOGIC ===================== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import emailjs from "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+emailjs.init({ publicKey: "L5p2VfgHWIoh77No1" });
 import {
   getFirestore, collection, addDoc, deleteDoc, doc,
   onSnapshot, query, where, serverTimestamp
@@ -423,7 +425,14 @@ function initRoom(rootEl){
         createdAt: serverTimestamp()
       });
       setMsg("You're in, Superguest. Check-in details to follow (probably). Chewie will be in touch. 🦀","ok");
-      checkIn = null; checkOut = null; nameEl.value = ""; noteEl.value = "";
+      checkIn = null; checkOut = null;       emailjs.send("service_esafwjg", "template_mmpd0mj", {
+        room: room,
+        guestName: name,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        note: (noteEl.value || "").trim()
+      }).catch(function (e) { console.log("Email failed:", e); });
+nameEl.value = ""; noteEl.value = "";
       ciBox.textContent = "Pick a date →"; coBox.textContent = "Pick a date";
       renderCal();
     }catch(e){
